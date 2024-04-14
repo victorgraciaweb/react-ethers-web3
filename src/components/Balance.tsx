@@ -41,22 +41,22 @@ export function Balance() {
     }, [cuenta]);
 
     async function submit(data: LoginFormInputs) {
+        setTxSuccess(null);
+        setTxError(null);
+
         const transactionParameters = {
             from: cuenta,
             to: data.address,
-            value: ethers.parseEther(data.amount)
+            value: ethers.parseEther(data.amount).toString()
         };
         try {
-
-            console.log('....');
-
             const txHash = await ethereum.request({
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
             });
             setTxSuccess(txHash)
-        } catch (error) {
-            //setTxError(error)
+        } catch (error: any) {
+            setTxError(error.message);
         }
     };
 
@@ -90,8 +90,8 @@ export function Balance() {
                 <button type="submit" className='btn btn-primary'>Send</button>
             </form>
 
-            {txSuccess && <div className='alert alert-info'>{txSuccess}</div>}
-            {txError && <div className='alert alert-info'>{txError}</div>}
+            {txSuccess && <div className='alert alert-info mt-3'>{txSuccess}</div>}
+            {txError && <div className='alert alert-danger mt-3'>{txError}</div>}
         </div>
     )
 }
